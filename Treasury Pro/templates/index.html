@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TreasuryPro - Financial Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">TreasuryPro</h1>
+            <p class="tagline">Financial Analysis Dashboard</p>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <form id="searchForm" class="search-form">
+                <input 
+                    type="text" 
+                    id="tickerInput" 
+                    placeholder="Enter stock ticker (e.g., AAPL, MSFT, GOOGL)" 
+                    class="search-input"
+                />
+                <button type="submit" class="search-btn" id="searchButton">
+                    <span id="btnText">Analyze</span>
+                    <span id="btnLoader" class="loader hidden"></span>
+                </button>
+            </form>
+            <div id="errorMsg" class="error hidden"></div>
+        </section>
+
+        <!-- Loading -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing financial data...</p>
+        </div>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="hidden">
+            
+            <!-- Company Header -->
+            <div class="company-header">
+                <div>
+                    <h2 id="companyName">-</h2>
+                    <p id="companyInfo">-</p>
+                </div>
+                <div class="price-box">
+                    <div class="price" id="price">$0.00</div>
+                    <div class="change" id="change">+0.00 (0.00%)</div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="tabs">
+                <button class="tab active" data-tab="overview">Overview</button>
+                <button class="tab" data-tab="ratios">Financial Ratios</button>
+                <button class="tab" data-tab="trends">Trends</button>
+                <button class="tab" data-tab="peers">Peer Comparison</button>
+                <button class="tab" data-tab="redflags">Red Flags</button>
+                <button class="tab" data-tab="industry">Industry Analysis</button>
+                <button class="tab" data-tab="rates">Interest Rates</button>
+                <button class="tab" data-tab="events">Events & Transcripts</button>
+            </nav>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                
+                <!-- Overview Tab -->
+                <div id="overview" class="tab-pane active">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h3>Key Metrics</h3>
+                            <table class="data-table">
+                                <tr><td>Market Cap</td><td id="marketCap">-</td></tr>
+                                <tr><td>P/E Ratio</td><td id="peRatio">-</td></tr>
+                                <tr><td>EPS</td><td id="eps">-</td></tr>
+                                <tr><td>Beta</td><td id="beta">-</td></tr>
+                                <tr><td>Dividend Yield</td><td id="dividendYield">-</td></tr>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <h3>Trading Info</h3>
+                            <table class="data-table">
+                                <tr><td>52-Week High</td><td id="high52">-</td></tr>
+                                <tr><td>52-Week Low</td><td id="low52">-</td></tr>
+                                <tr><td>Volume</td><td id="volume">-</td></tr>
+                                <tr><td>Avg Volume</td><td id="avgVolume">-</td></tr>
+                                <tr><td>Sharpe Ratio</td><td id="sharpeRatio">-</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Download Financial Statements Section -->
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>Download Financial Statements</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 15px;">Download detailed annual financial statements - select specific years</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Statement Type:</label>
+                                    <select id="statementType" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; min-width: 180px;">
+                                        <option value="income">Income Statement</option>
+                                        <option value="balance">Balance Sheet</option>
+                                        <option value="cashflow">Cash Flow Statement</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Format:</label>
+                                    <select id="fileFormat" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; min-width: 150px;">
+                                        <option value="xlsx">Excel (.xlsx)</option>
+                                        <option value="csv">CSV (.csv)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Select Years:</label>
+                                <div id="yearCheckboxes" style="display: flex; flex-wrap: wrap; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2024" checked> 2024
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2023" checked> 2023
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2022" checked> 2022
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2021" checked> 2021
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2020" checked> 2020
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2019"> 2019
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2018"> 2018
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2017"> 2017
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2016"> 2016
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2015"> 2015
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2014"> 2014
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2013"> 2013
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2012"> 2012
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2011"> 2011
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="year-checkbox" value="2010"> 2010
+                                    </label>
+                                </div>
+                                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                    <button onclick="selectAllYears()" style="padding: 6px 12px; background: #95a5a6; color: white; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                        Select All
+                                    </button>
+                                    <button onclick="selectRecentYears()" style="padding: 6px 12px; background: #95a5a6; color: white; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                        Select Last 5 Years
+                                    </button>
+                                    <button onclick="clearYears()" style="padding: 6px 12px; background: #95a5a6; color: white; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                        Clear All
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button onclick="downloadFinancials()" style="padding: 12px 32px; background: #3498db; color: white; border: none; border-radius: 4px; font-size: 15px; font-weight: 600; cursor: pointer; align-self: flex-start;">
+                                Download Statement
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Latest News Section -->
+                    <div class="card" style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 20px;">Latest News</h3>
+                        
+                        <!-- News Tabs -->
+                        <div class="news-tabs">
+                            <button class="news-tab active" data-filter="all">All</button>
+                            <button class="news-tab" data-filter="news">News</button>
+                            <button class="news-tab" data-filter="earnings">Earnings Calls</button>
+                            <button class="news-tab" data-filter="press">Press Releases</button>
+                            <button class="news-tab" data-filter="sec">SEC Filings</button>
+                        </div>
+                        
+                        <!-- News Feed -->
+                        <div id="latestNews" class="news-feed"></div>
+                    </div>
+                </div>
+
+                <!-- Financial Ratios Tab -->
+                <div id="ratios" class="tab-pane">
+                    <div class="ratio-selector">
+                        <label>Select Ratio Category:</label>
+                        <select id="ratioCategory" class="dropdown">
+                            <option value="valuation">Valuation Ratios</option>
+                            <option value="profitability">Profitability Ratios</option>
+                            <option value="liquidity">Liquidity Ratios</option>
+                            <option value="leverage">Leverage Ratios</option>
+                            <option value="efficiency">Efficiency Ratios</option>
+                        </select>
+                    </div>
+
+                    <div class="card">
+                        <div id="ratioContent"></div>
+                    </div>
+                </div>
+
+                <!-- Trends Tab -->
+                <div id="trends" class="tab-pane">
+                    <div class="card">
+                        <h3>5-Year Trend Analysis</h3>
+                        
+                        <div class="trend-section">
+                            <h4>Free Cash Flow Trend</h4>
+                            <div id="fcfTrend" class="trend-box"></div>
+                        </div>
+
+                        <div class="trend-section">
+                            <h4>P/E Ratio Trend</h4>
+                            <div id="peTrend" class="trend-box"></div>
+                        </div>
+
+                        <div class="trend-section">
+                            <h4>Debt Trend</h4>
+                            <div id="debtTrend" class="trend-box"></div>
+                        </div>
+
+                        <div class="trend-section">
+                            <h4>Revenue Trend</h4>
+                            <div id="revenueTrend" class="trend-box"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peer Comparison Tab -->
+                <div id="peers" class="tab-pane">
+                    <div class="card">
+                        <h3>Peer Comparison</h3>
+                        <div id="peerTable"></div>
+                    </div>
+                </div>
+
+                <!-- Red Flags Tab -->
+                <div id="redflags" class="tab-pane">
+                    <div class="card">
+                        <h3>Potential Red Flags</h3>
+                        <div id="redFlagsList"></div>
+                    </div>
+                </div>
+
+                <!-- Industry Analysis Tab -->
+                <div id="industry" class="tab-pane">
+                    <div class="card">
+                        <h3>Industry Analysis</h3>
+                        <div id="industryContent">
+                            <div class="info-box">
+                                <strong>Sector:</strong> <span id="sector">-</span>
+                            </div>
+                            <div class="info-box">
+                                <strong>Industry:</strong> <span id="industryName">-</span>
+                            </div>
+                            <div class="info-box" style="margin-top: 20px;">
+                                <p><strong>Industry Trends:</strong></p>
+                                <p id="industryTrends">Industry analysis based on peer performance and market conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interest Rates Tab -->
+                <div id="rates" class="tab-pane">
+                    <div class="card">
+                        <h3>US Treasury Securities</h3>
+                        <div id="treasuryTable"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Global Central Bank Interest Rates</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 15px;">Data from World Bank API and central bank websites</p>
+                        <div id="centralBankRatesTable"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Global Inflation Rates (CPI Year-over-Year)</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 15px;">Data from Trading Economics and national statistics offices</p>
+                        <div id="inflationRatesTable"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Download Interest Rates Data</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 15px;">Download all interest rates and inflation data</p>
+                        
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <button onclick="downloadRates('xlsx')" style="padding: 10px 24px; background: #27ae60; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                                Download Excel (.xlsx)
+                            </button>
+                            <button onclick="downloadRates('csv')" style="padding: 10px 24px; background: #2980b9; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                                Download CSV (.csv)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events & Transcripts Tab -->
+                <div id="events" class="tab-pane">
+                    <div class="card">
+                        <h3>Upcoming Events</h3>
+                        <div id="eventsList"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Earnings Call Transcripts</h3>
+                        <p>Access detailed earnings call transcripts from multiple sources:</p>
+                        <div id="transcriptLinks" style="margin-top: 15px;">
+                            <a id="transcriptSeekingAlpha" href="#" target="_blank" class="btn-link" style="margin-right: 10px; margin-bottom: 10px;">Seeking Alpha</a>
+                            <a id="transcriptFool" href="#" target="_blank" class="btn-link" style="margin-right: 10px; margin-bottom: 10px;">Motley Fool</a>
+                            <a id="transcriptYahoo" href="#" target="_blank" class="btn-link" style="margin-bottom: 10px;">Yahoo Finance</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Data sourced from Yahoo Finance. For informational purposes only. Not financial advice.</p>
+        </footer>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+MAJOR DASHBOARD UPDATES
+
+==============================================================
+1. ALL TRENDS NOW ANNUAL (Not Quarterly)
+==============================================================
+
+CHANGED:
+- Free Cash Flow: Now shows annual data (5 years)
+- Revenue: Now shows annual data (5 years)  
+- Debt: Now shows annual data (5 years)
+- P/E Ratio: Now shows annual averages (5 years)
+
+BEFORE: Quarterly data (20 quarters = 5 years)
+AFTER: Annual data (5 years)
+
+Chart labels now show years (2019, 2020, 2021, etc.) instead of quarters (Q1 2019, Q2 2019, etc.)
+
+==============================================================
+2. MARKET FACTORS TAB REMOVED
+==============================================================
+
+REMOVED:
+- Market Factors tab button
+- Entire Market Factors tab content
+- Tariff information section
+- World Bank economic indicators (GDP, CPI, Unemployment, Trade, Debt)
+
+WHY: As requested by user
+
+==============================================================
+3. DOWNLOAD FINANCIAL STATEMENTS (NEW FEATURE!)
+==============================================================
+
+LOCATION: Overview Tab
+
+WHAT YOU CAN DOWNLOAD:
+- Income Statement
+- Balance Sheet
+- Cash Flow Statement
+
+OPTIONS:
+- Number of Years: 5, 10, or 15 years
+- Format: Excel (.xlsx) or CSV (.csv)
+- All data from Yahoo Finance
+
+HOW TO USE:
+1. Search for a company (e.g., AAPL)
+2. Go to Overview tab
+3. Scroll down to "Download Financial Statements" section
+4. Select statement type, years, and format
+5. Click "Download Statement"
+
+FILE NAMING:
+- AAPL_income_5years.xlsx
+- AAPL_balance_10years.csv
+- AAPL_cashflow_15years.xlsx
+
+DATA SOURCE: Yahoo Finance via yfinance library
+
+==============================================================
+4. DOWNLOAD INTEREST RATES DATA (NEW FEATURE!)
+==============================================================
+
+LOCATION: Interest Rates Tab
+
+WHAT YOU CAN DOWNLOAD:
+- US Treasury Yields (all maturities)
+- Global Central Bank Rates (7 major economies)
+- Global Inflation Rates (7 major economies)
+
+OPTIONS:
+- Excel (.xlsx) - Multiple sheets for each data type
+- CSV (.csv) - All data in one file with sections
+
+HOW TO USE:
+1. Search for any company
+2. Go to Interest Rates tab
+3. Scroll to bottom
+4. Click "Download Excel" or "Download CSV"
+
+EXCEL FILE STRUCTURE:
+- Sheet 1: Treasury Yields
+- Sheet 2: Central Bank Rates
+- Sheet 3: Inflation Rates
+
+CSV FILE STRUCTURE:
+- Section 1: Treasury Yields (with header)
+- Section 2: Central Bank Rates (with header)
+- Section 3: Inflation Rates (with header)
+
+==============================================================
+5. TECHNICAL CHANGES
+==============================================================
+
+FILES MODIFIED:
+
+1. app.py (Backend)
+   - Updated get_5year_trends() to use annual data
+   - Added download endpoint: /download/financials/<ticker>
+   - Added download endpoint: /download/rates
+   - Uses pandas to create Excel and CSV files
+
+2. templates/index.html (Frontend Structure)
+   - Removed Market Factors tab button
+   - Removed Market Factors tab content
+   - Added Download Financial Statements section in Overview
+   - Added Download Interest Rates section in Interest Rates tab
+
+3. static/script.js (Frontend Logic)
+   - Added downloadFinancials() function
+   - Added downloadRates() function
+   - Functions trigger file downloads via browser
+
+4. requirements.txt (Dependencies)
+   - Added openpyxl==3.1.2 for Excel file creation
+
+==============================================================
+6. HOW TO UPDATE
+==============================================================
+
+STEP 1: Stop server
+Ctrl + C
+
+STEP 2: Install new dependency
+python -m pip install openpyxl
+
+STEP 3: Replace all files
+- app.py
+- templates/index.html
+- static/script.js
+- requirements.txt
+
+STEP 4: Restart server
+python app.py
+
+STEP 5: Test
+1. Search for AAPL
+2. Check Trends tab - should show annual years (2019, 2020, etc.)
+3. Go to Overview - should see Download Financial Statements section
+4. Try downloading Income Statement (5 years, Excel)
+5. Go to Interest Rates tab - should see download buttons at bottom
+6. Try downloading rates data (Excel)
+
+==============================================================
+7. DOWNLOAD EXAMPLES
+==============================================================
+
+FINANCIAL STATEMENTS:
+
+Income Statement (5 years, Excel):
+URL: /download/financials/AAPL?type=income&years=5&format=xlsx
+File: AAPL_income.xlsx
+Contains: Annual income statement with 5 years of data
+
+Balance Sheet (10 years, CSV):
+URL: /download/financials/MSFT?type=balance&years=10&format=csv
+File: MSFT_balance.csv
+Contains: Annual balance sheet with 10 years of data
+
+Cash Flow (15 years, Excel):
+URL: /download/financials/GOOGL?type=cashflow&years=15&format=xlsx
+File: GOOGL_cashflow.xlsx
+Contains: Annual cash flow statement with 15 years
+
+INTEREST RATES:
+
+Excel Format:
+URL: /download/rates?format=xlsx
+File: interest_rates.xlsx
+Contains: 3 sheets (Treasury, Central Banks, Inflation)
+
+CSV Format:
+URL: /download/rates?format=csv
+File: interest_rates.csv
+Contains: All data in one file with section headers
+
+==============================================================
+8. DATA SPECIFICATIONS
+==============================================================
+
+FINANCIAL STATEMENTS:
+- Source: Yahoo Finance API
+- Frequency: Annual
+- Max History: 15 years
+- Format: Detailed line items
+- Currency: US Dollars
+
+INTEREST RATES:
+- Treasury Yields: 8 maturities (1M to 30Y)
+- Central Bank Rates: 7 countries
+- Inflation Rates: 7 countries (CPI year-over-year)
+- Update Frequency: Daily for Treasury, Monthly for others
+
+==============================================================
+9. IMPORTANT NOTES
+==============================================================
+
+ANNUAL TRENDS:
+- Charts now show 5 annual data points instead of 20 quarterly
+- More stable, easier to see long-term trends
+- Less clutter on charts
+
+DOWNLOADS:
+- Files download immediately (no waiting)
+- Excel files have proper formatting
+- CSV files are UTF-8 encoded
+- All data is structured and ready for analysis
+
+LIMITS:
+- Maximum 15 years for financial statements
+- Yahoo Finance may not have 15 years for all companies
+- If data not available, file will contain fewer years
+
+ERRORS:
+- If download fails, check browser console (F12)
+- Common issue: Company not found or no data available
+- Solution: Try different ticker or fewer years
+
+==============================================================
+10. SUMMARY
+==============================================================
+
+✅ Trends changed from quarterly to annual
+✅ Market Factors tab completely removed
+✅ Download financial statements (Income, Balance, Cash Flow)
+✅ Download interest rates and inflation data
+✅ Excel and CSV format options
+✅ Up to 15 years of historical data
+✅ All from Yahoo Finance
+
+Your dashboard now has comprehensive download capabilities!
+
+==============================================================

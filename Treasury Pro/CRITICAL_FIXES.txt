@@ -1,0 +1,54 @@
+CRITICAL FIXES - World Bank Data + Yahoo Finance News Layout
+
+=== ISSUE #1: World Bank Data Stuck on "Loading..." ===
+
+PROBLEM: All economic indicators showing "Loading..." forever
+
+ROOT CAUSE: Key mismatch between backend and frontend
+- Backend had: 'gdp', 'inflation', 'unemployment', 'trade', 'debt'
+- Frontend expected: 'GDP', 'CPI', 'Unemployment', 'Trade', 'Debt'
+
+FIX:
+✅ Changed backend keys to uppercase (GDP, CPI, etc.)
+✅ Fixed date range to 2018-2024
+✅ Increased data fetch to 20 items per request
+✅ Fixed rawValue key (was raw_value)
+
+=== ISSUE #2: News Section Plain Text ===
+
+PROBLEM: News was plain cards, not Yahoo Finance style
+
+FIX:
+✅ Added tab navigation (All, News, Earnings, Press, SEC)
+✅ Large 200x135px thumbnails with colored placeholders
+✅ Horizontal card layout (image left, text right)
+✅ Professional hover effects
+✅ Click entire card to open article
+✅ Better spacing and typography
+
+=== FILES CHANGED ===
+
+1. app.py - Fixed World Bank indicator keys and data fetching
+2. index.html - Added news tabs and new structure
+3. style.css - Added Yahoo Finance-style news CSS
+4. script.js - Rewrote displayNews() for large cards with images
+
+=== HOW TO UPDATE ===
+
+1. Stop server (Ctrl+C)
+2. Replace all 4 files
+3. Restart: python app.py
+4. Test: Search for AAPL, wait 40 seconds
+5. Check Market Factors tab - should see data tables
+6. Check Overview tab - should see Yahoo-style news
+
+=== WHAT YOU'LL SEE ===
+
+Market Factors Tab:
+GDP, CPI, Unemployment, Trade, Debt tables with actual data
+Values like $25.44T, 3.7%, etc. instead of "Loading..."
+
+Overview - Latest News:
+[All] [News] [Earnings] [Press] [SEC Filings]
+Large news cards with colored thumbnails and headlines
+
